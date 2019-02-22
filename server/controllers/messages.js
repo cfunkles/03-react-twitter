@@ -38,8 +38,21 @@ const createMessage = async (req, res, next) => {
   }
 };
 
+const addStar = async (req, res, next) => {
+  try {
+    const {messageId} = req.body;
+    if (!messageId) return handleError(res, next, INV_REQ);
+    const updatedStarCount = await knex('messages').where('id', '=', messageId).increment('stars', 1).returning('stars');
+    res.data = udpatedStarCount;
+    return next();
+  } catch (err) {
+    return handleError(res, next);
+  }
+};
+
 module.exports = {
   getAllMessages,
   getMessagesByUser,
-  createMessage
+  createMessage,
+  addStar
 };

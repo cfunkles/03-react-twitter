@@ -43,7 +43,7 @@ const addStar = async (req, res, next) => {
     const {messageId} = req.body;
     if (!messageId) return handleError(res, next, INV_REQ);
     const updatedStarCount = await knex('messages').where('id', '=', messageId).increment('stars', 1).returning('stars');
-    res.data = udpatedStarCount;
+    res.data = updatedStarCount;
     return next();
   } catch (err) {
     return handleError(res, next);

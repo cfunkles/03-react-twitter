@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import ProfileAvatar from './ProfileAvatar';
 import AvatarDialog from './AvatarDialog';
 import { getMessages } from '../../api/messageApi';
+import { addStar } from '../../api/messageApi';
 
 import './Profile.css';
 import { sortMessagesById } from '../../Utilities/userUtilities';
@@ -14,6 +15,7 @@ class Profile extends Component {
       avatar: 'https://via.placeholder.com/150x150',
       name: 'Paul',
       handle: '@jack',
+      messages: [],
       message_count: 0,
       star_count: 0,
       bio: 'Front end dev located in Denver',
@@ -35,7 +37,7 @@ class Profile extends Component {
         this.setState({
           star_count: addUsersStars(res.data),
           message_count: res.data.length,
-          messages: this.renderMessageItem(res.data)
+          messages: res.data
         });
       }
     });
@@ -61,9 +63,26 @@ class Profile extends Component {
 ---
         {' '}
         {message.text}
+        {' '}
+        {message.stars}
+        {' '}
+        <button onClick={(e) => this.addStar(e, message.Id)}>&#128077;</button>
       </li>);
     });
     return htmlList;
+  }
+
+  addStar = (e, messageId) => {
+    e.preventDefault();
+    addStar(messageId).then((res) => {
+      console.log(res);
+      if (res && res.data) {
+        this.setState({
+          star_count: addUsersStars([{stars: res.data}]),
+          messages: this.renderMessageItem(res.data)
+        });
+      }
+    });
   }
 
   avatarClicked = (e) => {
@@ -121,7 +140,7 @@ likes:
 's Message List
           </h2>
           <ul>
-            {this.state.messages}
+            {this.renderMessageItem(this.state.messages)}
           </ul>
         </div>
       </div>

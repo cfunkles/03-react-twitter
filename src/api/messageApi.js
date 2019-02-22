@@ -41,7 +41,7 @@ export function addStar(messageId) {
           method: 'POST',
           body: messageId,
         });
-        resolve(response.json())
+        resolve(response)
       } catch(e){
         console.error(e);
         reject(e);
